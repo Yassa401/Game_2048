@@ -1,11 +1,14 @@
+#include <MLV/MLV_all.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
+#include "jeu_tmp.h"
+#include <string.h>
 
-#define NB_MAX 4
+#define NB_MAX 5
 
-void viderbuffer(){
+/*void viderbuffer(){
     int c = 0;
     while (c != '\n' && c != EOF){
         c = getchar();
@@ -20,7 +23,7 @@ int lire(char *str, int longueur){
         viderbuffer();
         return 0;
     }
-}
+}*/
 
 void matrice (int n, int mat[NB_MAX][NB_MAX]){
     int i,j;
@@ -29,6 +32,7 @@ void matrice (int n, int mat[NB_MAX][NB_MAX]){
             mat[i][j] = 0;
         }
     }
+    return;
 }
 
 void initialisation(int n,int mat[NB_MAX][NB_MAX]){
@@ -41,19 +45,18 @@ void initialisation(int n,int mat[NB_MAX][NB_MAX]){
         j = rand()%n;
     }
     mat[i][j] = (rand()%(2)+1)*2;
-    
-}
-void hasard(int n, int mat[NB_MAX][NB_MAX]){
-    int i,j;
-    i = rand()%n;
-    j = rand()%n; 
-    while (mat[i][j] != 0){
-        i = rand()%n;
-        j = rand()%n;
-    }
-    mat[i][j] = (rand()%(2)+1)*2; 
+    return;    
 }
 
+void tab_copy(int t1[NB_MAX][NB_MAX],int t2[NB_MAX][NB_MAX]){
+    int i, j;
+    for (i=0;i<NB_MAX;i++){
+        for (j=0;j<NB_MAX;j++){
+            t1[i][j] = t2[i][j];
+        }
+    }
+    return ;
+}
 void afficher(int n, int mat[NB_MAX][NB_MAX]){
     int i,j;
     for (i=0;i<n;i++){
@@ -71,16 +74,36 @@ void afficher(int n, int mat[NB_MAX][NB_MAX]){
     }
 }
 
-char deplacement(int n,int mat[NB_MAX][NB_MAX], char *c){
+void hasard(int n, int mat[NB_MAX][NB_MAX]){
     int i,j;
-    fprintf(stdout,"choisis un sens : "); /* a : gauche , d : droite, s : bas , w : haut */
-    if (lire(c,2) == 0){
-        printf("erreur dans l'entrée");
-        exit(EXIT_FAILURE);
+    i = rand()%n;
+    j = rand()%n; 
+    while (mat[i][j] != 0){
+        i = rand()%n;
+        j = rand()%n;
     }
-    //fprintf(stdout, "\n");
-    fprintf(stdout,"-%c-\n",c[0]); /* afficher le sens choisi */
-    if ( c[0] == 'a'){
+    mat[i][j] = (rand()%(2)+1)*2;
+    return;
+}
+
+int changement_etat(int t1[NB_MAX][NB_MAX], int t2[NB_MAX][NB_MAX]){
+    int i, j, tmp[NB_MAX][NB_MAX];
+    for (i=0;i<NB_MAX;i++){
+        for (j=0;j<NB_MAX;j++){
+            if (t1[i][j] != t2[i][j]) {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+MLV_Keyboard_button deplacement(int n,int mat[NB_MAX][NB_MAX], MLV_Keyboard_button sym){
+    int i,j;
+    const char* sym_string;
+    sym_string = MLV_convert_keyboard_button_to_string( sym );
+    printf("sym -----%s------ \n ",sym_string);
+    if ( sym == MLV_KEYBOARD_LEFT){
         int g ,tmp;
         for (i=0;i<n;i++){
             g = 0, tmp = 0;
@@ -94,7 +117,7 @@ char deplacement(int n,int mat[NB_MAX][NB_MAX], char *c){
             }
         }
     }
-    if ( c[0] == 'd'){
+    if ( sym == MLV_KEYBOARD_RIGHT){
         int d ,tmp;
         for (i=n-1; i>=0; i--){
             d = n-1, tmp = 0;
@@ -108,7 +131,7 @@ char deplacement(int n,int mat[NB_MAX][NB_MAX], char *c){
             }
         }
     }
-    if ( c[0] == 's'){
+    if ( sym == MLV_KEYBOARD_DOWN){
         int b, tmp;
         for (j=n-1; j>= 0; j--){
             b=n-1, tmp = 0;
@@ -122,7 +145,7 @@ char deplacement(int n,int mat[NB_MAX][NB_MAX], char *c){
              }
         }
     }
-    if ( c[0] == 'w'){
+    if ( sym  == MLV_KEYBOARD_UP){
         int h, tmp;
         for (j=0; j<n; j++){
             h = 0, tmp = 0;
@@ -132,19 +155,22 @@ char deplacement(int n,int mat[NB_MAX][NB_MAX], char *c){
                     mat[i][j] = 0;
                     mat[h][j] = tmp;
                     h += 1;
+                    printf("matrice changé \n");
                 }
              }
         }
     }
     else {}
-    return c[0];
-    
+    printf("fin d'éxécution \n");
+    return sym;
 }
-void deplacement_aux(int n,int mat[NB_MAX][NB_MAX], char c){
+
+
+void deplacement_aux(int n,int mat[NB_MAX][NB_MAX], MLV_Keyboard_button sym){
     int i,j;
     //fprintf(stdout, "\n");
     //fprintf(stdout,"-%c-\n",c);
-    if ( c == 'a'){
+    if ( sym == MLV_KEYBOARD_LEFT){
         int g ,tmp;
         for (i=0;i<n;i++){
             g = 0, tmp = 0;
@@ -158,7 +184,7 @@ void deplacement_aux(int n,int mat[NB_MAX][NB_MAX], char c){
             }
         }
     }
-    if ( c == 'd'){
+    if ( sym == MLV_KEYBOARD_RIGHT){
         int d ,tmp;
         for (i=n-1; i>=0; i--){
             d = n-1, tmp = 0;
@@ -172,7 +198,7 @@ void deplacement_aux(int n,int mat[NB_MAX][NB_MAX], char c){
             }
         }
     }
-    if ( c == 's'){
+    if ( sym == MLV_KEYBOARD_DOWN){
         int b, tmp;
         for (j=n-1; j>= 0; j--){
             b=n-1, tmp = 0;
@@ -186,7 +212,7 @@ void deplacement_aux(int n,int mat[NB_MAX][NB_MAX], char c){
             }
         }
     }
-    if ( c == 'w'){
+    if ( sym == MLV_KEYBOARD_UP){
         int h, tmp;
         for (j=0; j<n; j++){
             h = 0, tmp = 0;
@@ -201,7 +227,6 @@ void deplacement_aux(int n,int mat[NB_MAX][NB_MAX], char c){
         }
     }
     else {}
-    hasard(n, mat);
     return ;
 }
 void score_count(int *sc, int mat[NB_MAX][NB_MAX], int i, int j){
@@ -209,10 +234,10 @@ void score_count(int *sc, int mat[NB_MAX][NB_MAX], int i, int j){
     //fprintf(stdout, "Le score est : %d \n",*sc);
     return ;
 }
-void fusion(int n,int mat[NB_MAX][NB_MAX], char dep , int *score ){
+void fusion(int n,int mat[NB_MAX][NB_MAX], MLV_Keyboard_button dep, int *score ){
     int i,j; 
     // fprintf(stdout, "-%c-\n",dep);
-    if (dep == 'a'){
+    if (dep == MLV_KEYBOARD_LEFT){
         i = 0;
         while(i<n){
             j = 0;
@@ -227,7 +252,7 @@ void fusion(int n,int mat[NB_MAX][NB_MAX], char dep , int *score ){
             i += 1;
         }
     }
-    if (dep == 'd'){
+    if (dep == MLV_KEYBOARD_RIGHT){
         i = 0;
         while(i<n){
             j = n-1;
@@ -242,7 +267,7 @@ void fusion(int n,int mat[NB_MAX][NB_MAX], char dep , int *score ){
             i += 1;
         }
     }
-    if (dep == 'w'){
+    if (dep == MLV_KEYBOARD_UP){
         j = 0;
         while(j<n){
             i = 0;
@@ -257,7 +282,7 @@ void fusion(int n,int mat[NB_MAX][NB_MAX], char dep , int *score ){
             j += 1;
         }
     }
-    if (dep == 's'){
+    if (dep == MLV_KEYBOARD_DOWN){
         j = 0;
         while(j<n){
             i = n-1;
@@ -281,7 +306,7 @@ void victoire(int n, int mat[NB_MAX][NB_MAX]){
     int i,j;
     for (i=0;i<n;i++){
         for (j=0;j<n;j++){
-            if (mat[i][j] == 16){
+            if (mat[i][j] == 2048){
                 afficher(n, mat);
                 fprintf(stdout,"Vous avez gagné ! \n");
                 exit(EXIT_SUCCESS);
