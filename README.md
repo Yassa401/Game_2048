@@ -6,4 +6,4 @@ Binôme : Yasser et Lydia
 
 
 ## Compilation :
-commande : gcc -Wall `pkg-config --cflags MLV` `pkg-config --libs-only-other --libs-only-L MLV` jeu_initiale.c jeu_tmp.o `pkg-config --libs-only-l MLV` -o jeu_initiale
+commande : gcc -Wall \`pkg-config --cflags MLV\` `pkg-config --libs-only-other --libs-only-L MLV` jeu_initiale.c jeu_tmp.o `pkg-config --libs-only-l MLV` -o jeu_initiale
