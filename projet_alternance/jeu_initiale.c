@@ -49,11 +49,13 @@ void afficher_mlv(int n, int mat[NB_MAX][NB_MAX]){
 
 int main(void){
     int n, mat[NB_MAX][NB_MAX],mat_tmp[NB_MAX][NB_MAX], x, y, score;
-    char* text; 
+    char* text;
+    char score_str[50];
     MLV_Keyboard_button sym;
     MLV_Event event;
     MLV_Keyboard_button dep ;
     n = NB_MAX, score = 0;
+    sprintf(score_str,"%d",score);
     MLV_create_window("Jeu_2048", "2048", NB_MAX*110+10+150, NB_MAX*110+10+150);
     MLV_wait_input_box(
                 100, 70, 300, 150,
@@ -68,27 +70,32 @@ int main(void){
         while(1){
             if (event == MLV_KEY){
                 printf("event recuperé\n");
+
+                /* déroulement de la partie en arrière plan  */
                 tab_copy(mat_tmp, mat);
                 victoire(n, mat);
                 dep = deplacement(n, mat, sym);
                 fusion(n, mat, dep, &score );
-                /* affichage dans le terminal du score */
-                fprintf(stdout, "Le score est : %d \n",score);        
+                sprintf(score_str,"%d",score);
                 if (changement_etat(mat,mat_tmp)){
                     hasard(n,mat);
                 }
-                /* affichage du plateau de jeu dans le terminal */
+                
+                /* affichage du plateau de jeu et du score dans le terminal */
+                fprintf(stdout, "Le score est : %d \n",score);
                 afficher(n, mat);
-            }           
-            /*MLV_wait_input_box(
-                10, 70, 200, 90,
-                MLV_COLOR_RED, MLV_COLOR_GREEN,MLV_COLOR_BLACK,
-                "Nom du joueur : ", &text
-                );*/
+            }
+
+            /* effacer le contenu de la fenêtre pour afficher l'état actuel */
             MLV_clear_window( MLV_COLOR_BLACK);
-            MLV_draw_text( 50, 50, "Joueur : ", MLV_COLOR_GREEN );
+
+            /* afficher le nom du joueur et du score dans l'interface graphique  */
+            MLV_draw_text( 50, 50, "Joueur : ", MLV_COLOR_WHITE );
             MLV_draw_text( 120, 50, text, MLV_COLOR_GREEN );
-            /* MLV_draw_filled_rectangle(0,0,NB_MAX*110+10,NB_MAX*110+10,MLV_COLOR_BLACK); */
+            
+            MLV_draw_text( 300, 50, "Score : ", MLV_COLOR_WHITE );
+            MLV_draw_text( 370, 50, score_str, MLV_COLOR_GREEN );
+            
             for (x = 10+75; x <= NB_MAX*110+150-100; x+=110){
                 for (y = 10+150; y <= NB_MAX*110+150-100; y+=110){
                     MLV_draw_filled_rectangle(x,y,100,100,MLV_COLOR_GREY);
@@ -96,7 +103,8 @@ int main(void){
             }
             afficher_mlv(n,mat);
             MLV_update_window();
-            printf("arrivé ici ! \n");
+            
+            /* printf("arrivé ici ! \n"); */
             event =MLV_wait_keyboard_or_mouse(&sym,NULL,NULL,NULL,NULL);
         }
     }

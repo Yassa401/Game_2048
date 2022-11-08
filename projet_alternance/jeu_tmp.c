@@ -63,11 +63,11 @@ void afficher(int n, int mat[NB_MAX][NB_MAX]){
         printf("|");
         for (j=0;j<n;j++){
             if (mat[i][j] == 0){
-                printf("  |");
+                printf("    |");
             }
             else
             {
-                printf("%d |",mat[i][j]);
+                printf("%4d|",mat[i][j]);
             }
         }
         printf("\n");
@@ -155,7 +155,6 @@ MLV_Keyboard_button deplacement(int n,int mat[NB_MAX][NB_MAX], MLV_Keyboard_butt
                     mat[i][j] = 0;
                     mat[h][j] = tmp;
                     h += 1;
-                    printf("matrice changé \n");
                 }
              }
         }
