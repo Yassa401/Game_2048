@@ -1,0 +1,9 @@
+
+jeu_initiale : jeu_tmp.o jeu_initiale.o sauvegarde_partie.o
+	gcc -o jeu_initiale -Wall `pkg-config --cflags MLV` `pkg-config --libs-only-other --libs-only-L MLV` jeu_initiale.o jeu_tmp.o sauvegarde_partie.o `pkg-config --libs-only-l MLV`
+jeu_initiale.o : jeu_initiale.c jeu_tmp.h sauvegarde_partie.h
+	gcc -c -O3 jeu_initiale.c
+sauvegarde_partie.o : sauvegarde_partie.c jeu_tmp.h
+	gcc -c -O3 sauvegarde_partie.c
+jeu_tmp.o : jeu_tmp.c jeu_tmp.h
+	gcc -c -O3 jeu_tmp.c

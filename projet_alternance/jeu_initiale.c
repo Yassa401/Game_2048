@@ -4,6 +4,7 @@
 #include <time.h>
 #include <math.h>
 #include "jeu_tmp.h"
+#include "sauvegarde_partie.h"
 
 MLV_Color couleur(int i,int j,int mat[NB_MAX][NB_MAX]){
     switch ( mat[i][j] )
@@ -47,10 +48,23 @@ void afficher_mlv(int n, int mat[NB_MAX][NB_MAX]){
     }
 }
 
+void victoire_mlv(int n, int mat[NB_MAX][NB_MAX]){
+    int i,j;
+    for (i=0;i<n;i++){
+        for (j=0;j<n;j++){
+            if (mat[i][j] == 2048){
+                MLV_draw_text( 470, 50, "Vous avez gagné !", MLV_COLOR_GREEN );
+                
+            }
+        }
+    }
+}
+
 int main(void){
     int n, mat[NB_MAX][NB_MAX],mat_tmp[NB_MAX][NB_MAX], x, y, score;
     char* text;
     char score_str[50];
+    char * fichier = "partie.txt";
     MLV_Keyboard_button sym;
     MLV_Event event;
     MLV_Keyboard_button dep ;
@@ -66,6 +80,7 @@ int main(void){
         srand(time(NULL));
         matrice(n, mat);
         initialisation(n, mat);
+        recup_partie(n, fichier, mat);
         /*MLV_create_window("Jeu_2048", "2048", NB_MAX*110+10, NB_MAX*110+10);*/
         while(1){
             if (event == MLV_KEY){
@@ -95,7 +110,8 @@ int main(void){
             
             MLV_draw_text( 300, 50, "Score : ", MLV_COLOR_WHITE );
             MLV_draw_text( 370, 50, score_str, MLV_COLOR_GREEN );
-            
+
+            victoire_mlv(n, mat);
             for (x = 10+75; x <= NB_MAX*110+150-100; x+=110){
                 for (y = 10+150; y <= NB_MAX*110+150-100; y+=110){
                     MLV_draw_filled_rectangle(x,y,100,100,MLV_COLOR_GREY);
