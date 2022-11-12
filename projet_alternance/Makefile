@@ -7,3 +7,5 @@ sauvegarde_partie.o : sauvegarde_partie.c jeu_tmp.h
 	gcc -c -O3 sauvegarde_partie.c
 jeu_tmp.o : jeu_tmp.c jeu_tmp.h
 	gcc -c -O3 jeu_tmp.c
+clean : 
+	rm -f jeu_initiale *.o
