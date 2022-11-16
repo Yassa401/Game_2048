@@ -6,7 +6,7 @@
 #include "jeu_tmp.h"
 #include <string.h>
 
-#define NB_MAX 5
+#define NB_MAX 4
 
 /*void viderbuffer(){
     int c = 0;
@@ -323,9 +323,44 @@ void victoire(int n, int mat[NB_MAX][NB_MAX]){
     }
     return 0 ;
     }*/
+int d_ligne(int n, int mat[NB_MAX][NB_MAX]){
+    int i,j;
 
-void defaite();
-void limite();
+    for(i=0;i<n;i++){
+        for(j=0;j<n-1;j++){
+            if(mat[i][j]==mat[i][j+1]){
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+int d_colonne(int n, int mat[NB_MAX][NB_MAX]){
+    int i,j;
+    for(i=0;i<n-1;i++){
+        for(j=0;j<n;j++){
+            if(mat[i][j]==mat[i+1][j]){
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+int defaite(int n, int mat[NB_MAX][NB_MAX]){
+    int i,j ,cmp=0;
+    for(i=0;i<n;i++){
+        for(j=0;j<n;j++){
+            if(mat[i][j]==0){
+                cmp++;
+            }
+        }
+    }
+    if(cmp==0 && d_ligne(n,mat)==0 && d_colonne(n,mat)==0){
+        return 0;
+    }  
+    return 1;
+}
+ 
 
 
 /* tests des fonctions */ 

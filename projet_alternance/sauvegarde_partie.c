@@ -23,3 +23,33 @@ void recup_partie (int n,char *  str,int mat[NB_MAX][NB_MAX]){
         }
     }    
 }
+
+void sauvegarde_score(int meilleur_score){
+
+  FILE* fichier=NULL;
+
+  fichier=fopen("meilleur_score.txt","w+");
+
+  if(fichier==NULL){
+
+    printf("impossible d'ouvrir le fichier\n");
+
+    exit(EXIT_FAILURE);
+
+  }
+
+  fprintf(fichier,"%d",meilleur_score);;
+
+  fclose(fichier);
+
+}
+void meilleur(int *meilleur_score,int score_actuelle){
+
+  if(score_actuelle>*meilleur_score){
+
+    *meilleur_score=score_actuelle;
+    sauvegarde_score(*meilleur_score);
+
+  }
+}
+

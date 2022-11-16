@@ -3,7 +3,7 @@
 #define JEU_TMP_H
 
 #ifndef NB_MAX
-#define NB_MAX 5
+#define NB_MAX 4
 
 #endif
 
@@ -18,5 +18,6 @@ void deplacement_aux(int n,int mat[NB_MAX][NB_MAX], MLV_Keyboard_button sym);
 void score_count(int *sc, int mat[NB_MAX][NB_MAX], int i, int j);
 void fusion(int n,int mat[NB_MAX][NB_MAX], MLV_Keyboard_button dep , int *score );
 void victoire(int n, int mat[NB_MAX][NB_MAX]);
+int defaite(int n, int mat[NB_MAX][NB_MAX]);
 
 #endif
