@@ -3,7 +3,7 @@
 #define JEU_TMP_H
 
 #ifndef NB_MAX
-#define NB_MAX 4
+#define NB_MAX 5
 
 #endif
 

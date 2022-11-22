@@ -4,7 +4,7 @@
 #include "jeu_tmp.h"
 #include "sauvegarde_partie.h"
 
-void recup_partie (int n,char *  str,int mat[NB_MAX][NB_MAX]){
+void recup_partie (int n,char *  str,int mat[NB_MAX][NB_MAX], int *score){
     FILE* fichier = NULL;
     int i,j, valeur;
     fichier = fopen(str, "r");
@@ -13,6 +13,11 @@ void recup_partie (int n,char *  str,int mat[NB_MAX][NB_MAX]){
         exit(EXIT_FAILURE);
     }
     valeur = 0;
+    if (fscanf(fichier,"%d", &valeur) != 1){
+        fprintf(stderr,"Erreur dans l'ouverture du fichier !\n");
+        return ;
+    };
+    *score = valeur ;
     for (i = 0; i<n; i++){
         for (j = 0; j<n; j++){
             if (fscanf(fichier,"%d", &valeur) != 1){

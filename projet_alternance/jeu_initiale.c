@@ -29,7 +29,10 @@ int main(void){
     
     MLV_create_window("Jeu_2048", "2048", NB_MAX*110+10+150, NB_MAX*110+10+150);
 
-    /* demander si on veut une nouvelle partie ou continuer */
+    
+    /*!
+     * demander si le joueur veut commencer une nouvelle partie ou continuer 
+     */
     MLV_draw_adapted_text_box(
         taille_x/4 , taille_y/4,
         "Commencer une nouvelle partie",taille_interlinge,
@@ -41,7 +44,11 @@ int main(void){
         MLV_COLOR_RED,MLV_COLOR_GREEN, MLV_COLOR_BLACK,
         MLV_TEXT_CENTER);
     MLV_actualise_window();
-    /* Attendre que l'utilisateur clique sur le bouton de la souris */
+    
+
+    /*!
+     * Attendre que l'utilisateur clique sur le bouton de la souris 
+    */
     MLV_wait_mouse(&mouse_x,&mouse_y);
 
     if (taille_x/4 <= mouse_x && mouse_x <= 3*taille_x/4 && taille_y/4 <= mouse_y &&  mouse_y <= taille_y/4 + 20){
@@ -69,13 +76,17 @@ int main(void){
         matrice(n, mat);
         initialisation(n, mat);
         if (continuer_partie){
-            recup_partie(n, fichier, mat); 
+            recup_partie(n, fichier, mat, &score);
+            sprintf(score_str,"%d",score);
         }
         while(1){
             if (event == MLV_KEY){
                 printf("event recuperé\n");
 
-                /* déroulement de la partie en arrière plan  */
+
+                /*!
+                 * déroulement de la partie en arrière plan  
+                 */
                 tab_copy(mat_tmp, mat);
                 victoire(n, mat);
                 if (defaite(n,mat)==0){
@@ -85,7 +96,7 @@ int main(void){
                 fusion(n, mat, dep, &score );
                 meilleur(&meilleur_score,score);
 
-                if (score > meilleur_score){
+                if (score >= meilleur_score){
                 sprintf(meilleur_score_str,"%d",meilleur_score);
                 }
                 sprintf(score_str,"%d",score);
@@ -94,15 +105,23 @@ int main(void){
                     hasard(n,mat);
                 }
                 
-                /* affichage du plateau de jeu et du score dans le terminal */
+                /*! 
+                 * affichage du plateau de jeu et du score dans le terminal 
+                 */
                 fprintf(stdout, "Le score est : %d \n",score);
                 afficher(n, mat);
             }
 
-            /* effacer le contenu de la fenêtre pour afficher l'état actuel */
+            
+            /*! 
+             * effacer le contenu de la fenêtre pour afficher l'état actuel 
+             */
             MLV_clear_window( MLV_COLOR_BLACK);
 
-            /* afficher le nom du joueur et du score dans l'interface graphique  */
+            
+            /*!
+             * afficher le nom du joueur et du score dans l'interface graphique
+             */
             MLV_draw_text( 7* taille_x/100 , 7 * taille_y/100, "Joueur : ", MLV_COLOR_WHITE );
             MLV_draw_text( 17* taille_x/100, 7 * taille_y/100, text, MLV_COLOR_GREEN );
             
@@ -121,8 +140,11 @@ int main(void){
             }
             afficher_mlv(n,mat);
             MLV_update_window();
+
             
-            /* printf("arrivé ici ! \n"); */
+            /*! 
+             * printf("arrivé ici ! \n");
+             */
             event =MLV_wait_keyboard_or_mouse(&sym,NULL,NULL,NULL,NULL);
         }
     }

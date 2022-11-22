@@ -6,7 +6,7 @@
 #include "jeu_tmp.h"
 #include <string.h>
 
-#define NB_MAX 4
+#define NB_MAX 5
 
 /*void viderbuffer(){
     int c = 0;
