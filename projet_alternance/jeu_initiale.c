@@ -11,6 +11,7 @@ int main(void){
     int n, mat[NB_MAX][NB_MAX],mat_tmp[NB_MAX][NB_MAX], x, y, score, meilleur_score;
     int taille_x, taille_y ; /* taille de la fenetre */
     int mouse_x, mouse_y, taille_interlinge = 9 , continuer_partie = 0;
+    int etat_victoire = 0;
     char* text;
     char score_str[50];
     char meilleur_score_str[50];
@@ -52,11 +53,11 @@ int main(void){
     MLV_wait_mouse(&mouse_x,&mouse_y);
 
     if (taille_x/4 <= mouse_x && mouse_x <= 3*taille_x/4 && taille_y/4 <= mouse_y &&  mouse_y <= taille_y/4 + 20){
-        MLV_draw_text(150,400,"Initialisation d'une partie !",
+        MLV_draw_text(taille_x/4,450,"Initialisation d'une partie !",
                       MLV_COLOR_MAGENTA);
     }
     if (taille_x/4 <= mouse_x && mouse_x <= taille_x/2 && taille_y/2 <= mouse_y &&  mouse_y <= taille_y/2 + 20){
-        MLV_draw_text(150,400,"Récuperation de la partie !",
+        MLV_draw_text(taille_x/4,450,"Récuperation de la partie !",
                       MLV_COLOR_MAGENTA);
         continuer_partie = 1;
     }
@@ -135,11 +136,22 @@ int main(void){
             MLV_draw_text( 62 * taille_x/100, 7 * taille_y/100, "Meilleur score : ", MLV_COLOR_WHITE );
             MLV_draw_text( 82 * taille_x/100, 7 * taille_y/100, meilleur_score_str, MLV_COLOR_GREEN );
 
+            MLV_draw_adapted_text_box(
+                    7 * taille_x/100 , 15 *taille_y/100,
+                    "Sauvegarde",taille_interlinge,
+                    MLV_COLOR_RED,MLV_COLOR_GREEN, MLV_COLOR_BLACK,
+                    MLV_TEXT_CENTER);
+
 
             /*! 
              * afficher le cas de victoire et le cas de défaite 
+             * si etat_victoire = 0 alors on teste la fonction 
+             * sinon on a déja atteint la victoire et continue le jeu
+             * on teste la fonction défaite à chaque fois pour que le jeu arrête si atteint
              */
-            victoire_mlv(n, mat);
+            if (!etat_victoire){
+                etat_victoire = victoire_mlv(n, mat);
+            }
             defaite_mlv(n, mat);
 
             
@@ -151,9 +163,8 @@ int main(void){
             afficher_mlv(n,mat);
             MLV_update_window();
 
-            
-            /*! 
-             * printf("arrivé ici ! \n");
+            /*!
+             * On récupère l'événement pour l'itération suivante 
              */
             event =MLV_wait_keyboard_or_mouse(&sym,NULL,NULL,NULL,NULL);
         }

@@ -61,16 +61,17 @@ void afficher_mlv(int n, int mat[NB_MAX][NB_MAX]){
     }
 }
 
-void victoire_mlv(int n, int mat[NB_MAX][NB_MAX]){
+int victoire_mlv(int n, int mat[NB_MAX][NB_MAX]){
     int i,j;
     for (i=0;i<n;i++){
         for (j=0;j<n;j++){
             if (mat[i][j] == 2048){
                 MLV_draw_text( 66* (NB_MAX*110+10+150)/100, 15 *(NB_MAX*110+10+150)/100, "Vous avez gagné !", MLV_COLOR_RED );
-                
+                return 1 ;
             }
         }
     }
+    return 0  ;
 }
 
 void defaite_mlv(int n, int mat[NB_MAX][NB_MAX]){

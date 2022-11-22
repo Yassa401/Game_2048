@@ -288,7 +288,7 @@ void victoire(int n, int mat[NB_MAX][NB_MAX]){
             if (mat[i][j] == 2048){
                 afficher(n, mat);
                 fprintf(stdout,"Vous avez gagné ! \n");
-                exit(EXIT_SUCCESS);                
+                return ;                
             }
         }
     }
