@@ -46,15 +46,45 @@ void sauvegarde_score(int meilleur_score){
   fprintf(fichier,"%d",meilleur_score);;
 
   fclose(fichier);
-
+  
+  return ;
 }
 void meilleur(int *meilleur_score,int score_actuelle){
 
-  if(score_actuelle>*meilleur_score){
+    if(score_actuelle>*meilleur_score){
+        *meilleur_score=score_actuelle;
+        sauvegarde_score(*meilleur_score);
+    }
+    return ;
+}
 
-    *meilleur_score=score_actuelle;
-    sauvegarde_score(*meilleur_score);
+void sauvegarde_partie(int n, int mat[NB_MAX][NB_MAX], int score, char* text){
+    int i,j ;
+    FILE* fichier= NULL;
+    char fichier_str[50];
+    
+    /*!
+     * recupération du nom du joueur dans l'argument text
+     * nommer le fichier où la partie sera sauvegardé nom_joueur.txt
+     */
+    sprintf(fichier_str,"%s.txt",text);
+    fichier= fopen(fichier_str,"w+");
 
-  }
+    if(fichier==NULL){
+        printf("impossible d'ouvrir le fichier \n");
+        exit(EXIT_FAILURE);
+    }
+  
+    fprintf(fichier,"%d \n",score);
+
+    for(i=0;i<n;i++){
+        for(j=0;j<n;j++){
+            fprintf(fichier,"%d ",mat[i][j]);
+        }
+        fprintf(fichier,"\n");
+    }
+    fclose(fichier);
+
+    return ;
 }
 

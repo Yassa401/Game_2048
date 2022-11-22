@@ -110,6 +110,10 @@ int main(void){
                  */
                 fprintf(stdout, "Le score est : %d \n",score);
                 afficher(n, mat);
+                /*!
+                 * Sauvegarde de la partie dans un fichier "partie_1.txt"
+                 */
+                sauvegarde_partie(n,mat,score,text);
             }
 
             
@@ -130,9 +134,15 @@ int main(void){
 
             MLV_draw_text( 62 * taille_x/100, 7 * taille_y/100, "Meilleur score : ", MLV_COLOR_WHITE );
             MLV_draw_text( 82 * taille_x/100, 7 * taille_y/100, meilleur_score_str, MLV_COLOR_GREEN );
-            
+
+
+            /*! 
+             * afficher le cas de victoire et le cas de défaite 
+             */
             victoire_mlv(n, mat);
             defaite_mlv(n, mat);
+
+            
             for (x = 10+75; x <= NB_MAX*110+150-100; x+=110){
                 for (y = 10+150; y <= NB_MAX*110+150-100; y+=110){
                     MLV_draw_filled_rectangle(x,y,100,100,MLV_COLOR_GREY);

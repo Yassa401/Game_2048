@@ -8,23 +8,6 @@
 
 #define NB_MAX 5
 
-/*void viderbuffer(){
-    int c = 0;
-    while (c != '\n' && c != EOF){
-        c = getchar();
-    }
-}
-int lire(char *str, int longueur){
-    if (fgets(str,longueur,stdin) != NULL){
-        viderbuffer();
-        return 1;
-    }
-    else {
-        viderbuffer();
-        return 0;
-    }
-}*/
-
 void matrice (int n, int mat[NB_MAX][NB_MAX]){
     int i,j;
     for (i=0;i<n;i++){
@@ -230,12 +213,11 @@ void deplacement_aux(int n,int mat[NB_MAX][NB_MAX], MLV_Keyboard_button sym){
 }
 void score_count(int *sc, int mat[NB_MAX][NB_MAX], int i, int j){
     *sc += mat[i][j];
-    //fprintf(stdout, "Le score est : %d \n",*sc);
     return ;
 }
 void fusion(int n,int mat[NB_MAX][NB_MAX], MLV_Keyboard_button dep, int *score ){
-    int i,j; 
-    // fprintf(stdout, "-%c-\n",dep);
+    int i,j;
+    
     if (dep == MLV_KEYBOARD_LEFT){
         i = 0;
         while(i<n){
@@ -299,8 +281,6 @@ void fusion(int n,int mat[NB_MAX][NB_MAX], MLV_Keyboard_button dep, int *score )
     deplacement_aux(n,mat,dep);
 }
 
-void meilleure(); 
-
 void victoire(int n, int mat[NB_MAX][NB_MAX]){
     int i,j;
     for (i=0;i<n;i++){
@@ -313,16 +293,7 @@ void victoire(int n, int mat[NB_MAX][NB_MAX]){
         }
     }
 }
-/* int est_deplacer(char *c, int n){
-    char strdep[4] = {'a','d','w','s'};
-    int i;
-    for (i=0;i<n;i++){
-        if (c[0] == strdep[i]){
-            return 1 ;
-        }
-    }
-    return 0 ;
-    }*/
+
 int d_ligne(int n, int mat[NB_MAX][NB_MAX]){
     int i,j;
 
@@ -361,25 +332,3 @@ int defaite(int n, int mat[NB_MAX][NB_MAX]){
     return 1;
 }
  
-
-
-/* tests des fonctions */ 
-
-/* int main(void){
-    int n, mat[NB_MAX][NB_MAX] , score = 0;
-    char c[2] = " ";
-    char dep = ' ';
-    srand(time(NULL));
-    n = NB_MAX;
-    matrice(n, mat);
-    initialisation(n, mat);
-    while(1){
-        victoire(n, mat);
-        afficher(n, mat);
-        dep = deplacement(n, mat, c);
-        fusion(n, mat, dep, &score );
-        fprintf(stdout, "Le score est : %d \n",score);        
-        //hasard(n, mat);
-    }
-    
-    } */
