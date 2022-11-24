@@ -10,7 +10,24 @@
 int main(void){
     int n, mat[NB_MAX][NB_MAX],mat_tmp[NB_MAX][NB_MAX], x, y, score, meilleur_score;
     int taille_x, taille_y ; /* taille de la fenetre */
-    int mouse_x, mouse_y, taille_interlinge = 9 , continuer_partie = 0;
+    int mouse_x, mouse_y, taille_interligne = 9;
+    int continuer_partie = 0, commencer_partie = 0;
+
+    /*! 
+     * variables contenant la taille de la boite du texte commencer la partie
+     */
+    int longueur_boite_commencer, largeur_boite_commencer ;
+    
+    /*!
+     * variables contenant la taille de la boite du texte continuer la partie
+     */
+    int longueur_boite_continuer, largeur_boite_continuer ;
+
+    /*!
+     * variables contenant la taille de la boite de la sauvegarde d'une partie
+     */
+    int longueur_boite_sauvergarde, largeur_boite_sauvegarde ;
+    
     int etat_victoire = 0;
     char* text;
     char score_str[50];
@@ -30,18 +47,39 @@ int main(void){
     
     MLV_create_window("Jeu_2048", "2048", NB_MAX*110+10+150, NB_MAX*110+10+150);
 
+    /*!
+     * taille de la boite du bouton sauvegarde 
+     */
+    MLV_get_size_of_adapted_text_box(
+                "Sauvegarde",
+                taille_interligne,
+                &largeur_boite_sauvegarde, &longueur_boite_sauvergarde
+        );
     
     /*!
      * demander si le joueur veut commencer une nouvelle partie ou continuer 
      */
+
+    MLV_get_size_of_adapted_text_box(
+                "Commencer une nouvelle partie",
+                taille_interligne,
+                &largeur_boite_commencer, &longueur_boite_commencer
+        );
+
+    MLV_get_size_of_adapted_text_box(
+                "Continuer la partie",
+                taille_interligne,
+                &largeur_boite_continuer, &longueur_boite_continuer
+        );
+
     MLV_draw_adapted_text_box(
         taille_x/4 , taille_y/4,
-        "Commencer une nouvelle partie",taille_interlinge,
+        "Commencer une nouvelle partie",taille_interligne,
         MLV_COLOR_RED,MLV_COLOR_GREEN, MLV_COLOR_BLACK,
         MLV_TEXT_CENTER);
     MLV_draw_adapted_text_box(
         taille_x/4, taille_y/2,
-        "Continuer la partie",taille_interlinge,
+        "Continuer la partie",taille_interligne,
         MLV_COLOR_RED,MLV_COLOR_GREEN, MLV_COLOR_BLACK,
         MLV_TEXT_CENTER);
     MLV_actualise_window();
@@ -50,18 +88,21 @@ int main(void){
     /*!
      * Attendre que l'utilisateur clique sur le bouton de la souris 
     */
-    MLV_wait_mouse(&mouse_x,&mouse_y);
 
-    if (taille_x/4 <= mouse_x && mouse_x <= 3*taille_x/4 && taille_y/4 <= mouse_y &&  mouse_y <= taille_y/4 + 20){
-        MLV_draw_text(taille_x/4,450,"Initialisation d'une partie !",
-                      MLV_COLOR_MAGENTA);
-    }
-    if (taille_x/4 <= mouse_x && mouse_x <= taille_x/2 && taille_y/2 <= mouse_y &&  mouse_y <= taille_y/2 + 20){
-        MLV_draw_text(taille_x/4,450,"Récuperation de la partie !",
-                      MLV_COLOR_MAGENTA);
-        continuer_partie = 1;
-    }
+    while(continuer_partie != 1 && commencer_partie != 1){
+        MLV_wait_mouse(&mouse_x,&mouse_y);
     
+        if (taille_x/4 <= mouse_x && mouse_x <= (taille_x/4 + largeur_boite_commencer) && taille_y/4 <= mouse_y &&  mouse_y <= (taille_y/4 + longueur_boite_commencer)){
+            MLV_draw_text(taille_x/4,450,"Initialisation d'une partie !",
+                          MLV_COLOR_MAGENTA);
+            commencer_partie = 1;
+        }
+        if (taille_x/4 <= mouse_x && mouse_x <= (taille_x/4 + largeur_boite_continuer) && taille_y/2 <= mouse_y &&  mouse_y <= (taille_y/2 + longueur_boite_continuer)){
+            MLV_draw_text(taille_x/4,450,"Récuperation de la partie !",
+                          MLV_COLOR_MAGENTA);
+            continuer_partie = 1;
+        }
+    }
     MLV_actualise_window();
     MLV_wait_seconds(2);
 
@@ -111,10 +152,22 @@ int main(void){
                  */
                 fprintf(stdout, "Le score est : %d \n",score);
                 afficher(n, mat);
+
+            }
+            if (event == MLV_MOUSE_BUTTON ){
+                
+                if ((7 *taille_x/100) <= mouse_x && mouse_x <= (7* taille_x/100 + largeur_boite_sauvegarde) && (15 *taille_y/100) <= mouse_y &&  mouse_y <= (15 *taille_y/100 + longueur_boite_sauvergarde) ){
+                    
+                    MLV_draw_text(8* taille_x/100 + largeur_boite_sauvegarde,16 *taille_y/100,"sauvegarde effectué !",
+                          MLV_COLOR_MAGENTA);
+                    MLV_actualise_window();
+                    MLV_wait_seconds(1);
                 /*!
-                 * Sauvegarde de la partie dans un fichier "partie_1.txt"
+                 * Sauvegarde de la partie dans un fichier "nom_joueur.txt"
                  */
-                sauvegarde_partie(n,mat,score,text);
+                    sauvegarde_partie(n,mat,score,text);
+                }
+
             }
 
             
@@ -125,20 +178,33 @@ int main(void){
 
             
             /*!
-             * afficher le nom du joueur et du score dans l'interface graphique
+             * afficher le nom du joueur , le score et le meilleur score dans la fenêtre de jeu
+             * afficher le bouton de sauvegarde 
              */
-            MLV_draw_text( 7* taille_x/100 , 7 * taille_y/100, "Joueur : ", MLV_COLOR_WHITE );
-            MLV_draw_text( 17* taille_x/100, 7 * taille_y/100, text, MLV_COLOR_GREEN );
+            MLV_draw_text( 7* taille_x/100 , 7 * taille_y/100,
+                           "Joueur : ",
+                           MLV_COLOR_WHITE );
+            MLV_draw_text( 17* taille_x/100, 7 * taille_y/100,
+                           text,
+                           MLV_COLOR_GREEN );
             
-            MLV_draw_text( 42 * taille_x/100, 7 * taille_y/100, "Score : ", MLV_COLOR_WHITE );
-            MLV_draw_text( 52 * taille_x/100, 7 * taille_y/100, score_str, MLV_COLOR_GREEN );
+            MLV_draw_text( 42 * taille_x/100, 7 * taille_y/100,
+                           "Score : ",
+                           MLV_COLOR_WHITE );
+            MLV_draw_text( 52 * taille_x/100, 7 * taille_y/100,
+                           score_str,
+                           MLV_COLOR_GREEN );
 
-            MLV_draw_text( 62 * taille_x/100, 7 * taille_y/100, "Meilleur score : ", MLV_COLOR_WHITE );
-            MLV_draw_text( 82 * taille_x/100, 7 * taille_y/100, meilleur_score_str, MLV_COLOR_GREEN );
+            MLV_draw_text( 62 * taille_x/100, 7 * taille_y/100,
+                           "Meilleur score : ",
+                           MLV_COLOR_WHITE );
+            MLV_draw_text( 82 * taille_x/100, 7 * taille_y/100,
+                           meilleur_score_str,
+                           MLV_COLOR_GREEN );
 
             MLV_draw_adapted_text_box(
                     7 * taille_x/100 , 15 *taille_y/100,
-                    "Sauvegarde",taille_interlinge,
+                    "Sauvegarde",taille_interligne,
                     MLV_COLOR_RED,MLV_COLOR_GREEN, MLV_COLOR_BLACK,
                     MLV_TEXT_CENTER);
 
@@ -166,7 +232,7 @@ int main(void){
             /*!
              * On récupère l'événement pour l'itération suivante 
              */
-            event =MLV_wait_keyboard_or_mouse(&sym,NULL,NULL,NULL,NULL);
+            event =MLV_wait_keyboard_or_mouse(&sym,NULL,NULL,&mouse_x,&mouse_y);
         }
     }
    
