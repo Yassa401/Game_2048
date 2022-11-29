@@ -3,10 +3,11 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
-#include "jeu_tmp.h"
 #include <string.h>
+#include "jeu_tmp.h"
+#include "jeu_initiale.h"
 
-#define NB_MAX 5
+
 
 void matrice (int n, int mat[NB_MAX][NB_MAX]){
     int i,j;
@@ -150,8 +151,8 @@ MLV_Keyboard_button deplacement(int n,int mat[NB_MAX][NB_MAX], MLV_Keyboard_butt
 
 void deplacement_aux(int n,int mat[NB_MAX][NB_MAX], MLV_Keyboard_button sym){
     int i,j;
-    //fprintf(stdout, "\n");
-    //fprintf(stdout,"-%c-\n",c);
+    /* fprintf(stdout, "\n"); */
+    /* fprintf(stdout,"-%c-\n",c); */
     if ( sym == MLV_KEYBOARD_LEFT){
         int g ,tmp;
         for (i=0;i<n;i++){

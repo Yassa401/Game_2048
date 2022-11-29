@@ -1,11 +1,8 @@
+#include "jeu_initiale.h"
 
 #ifndef JEU_TMP_H
 #define JEU_TMP_H
 
-#ifndef NB_MAX
-#define NB_MAX 5
-
-#endif
 
 void matrice(int n, int mat[NB_MAX][NB_MAX]);
 

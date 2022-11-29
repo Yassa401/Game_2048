@@ -1,7 +1,7 @@
 #include <MLV/MLV_all.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "jeu_tmp.h"
+#include "jeu_initiale.h"
 #include "sauvegarde_partie.h"
 
 void recup_partie (int n,char *  str,int mat[NB_MAX][NB_MAX], int *score){

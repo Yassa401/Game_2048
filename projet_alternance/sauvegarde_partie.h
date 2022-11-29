@@ -1,3 +1,4 @@
+#include "jeu_initiale.h"
 
 #ifndef SAUVEGARDE_PARTIE_H
 #define SAUVEGARDE_PARTIE_H

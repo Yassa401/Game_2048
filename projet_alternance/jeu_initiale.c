@@ -3,42 +3,38 @@
 #include <MLV/MLV_all.h>
 #include <time.h>
 #include <math.h>
+#include <string.h>
+#include "jeu_initiale.h"
 #include "jeu_tmp.h"
 #include "sauvegarde_partie.h"
 #include "interface.h"
+#include "menu_principale.h"
 
 int main(void){
     int n, mat[NB_MAX][NB_MAX],mat_tmp[NB_MAX][NB_MAX], x, y, score, meilleur_score;
     int taille_x, taille_y ; /* taille de la fenetre */
     int mouse_x, mouse_y, taille_interligne = 9;
-    int continuer_partie = 0, commencer_partie = 0;
+    int continuer_partie = 0;
 
-    /*! 
-     * variables contenant la taille de la boite du texte commencer la partie
-     */
-    int longueur_boite_commencer, largeur_boite_commencer ;
     
-    /*!
-     * variables contenant la taille de la boite du texte continuer la partie
-     */
-    int longueur_boite_continuer, largeur_boite_continuer ;
-
     /*!
      * variables contenant la taille de la boite de la sauvegarde d'une partie
      */
     int longueur_boite_sauvergarde, largeur_boite_sauvegarde ;
     
     int etat_victoire = 0;
-    char* text;
+    char text[50] ;
     char score_str[50];
     char meilleur_score_str[50];
     char * fichier = "partie.txt";
-    MLV_Keyboard_button sym;
-    MLV_Event event;
-    MLV_Keyboard_button dep ;
+    MLV_Keyboard_button sym = MLV_KEYBOARD_NONE;
+    MLV_Event event = MLV_NONE;
+    MLV_Keyboard_button dep = MLV_KEYBOARD_NONE;
+    
     n = NB_MAX, score = 0;
     meilleur_score = 425;
 
+    strcpy(text,"Unknown");
     taille_x = NB_MAX*110+10+150;
     taille_y = NB_MAX*110+10+150;
     
@@ -46,6 +42,7 @@ int main(void){
     sprintf(meilleur_score_str,"%d",meilleur_score);
     
     MLV_create_window("Jeu_2048", "2048", NB_MAX*110+10+150, NB_MAX*110+10+150);
+    
 
     /*!
      * taille de la boite du bouton sauvegarde 
@@ -56,63 +53,20 @@ int main(void){
                 &largeur_boite_sauvegarde, &longueur_boite_sauvergarde
         );
     
-    /*!
-     * demander si le joueur veut commencer une nouvelle partie ou continuer 
-     */
-
-    MLV_get_size_of_adapted_text_box(
-                "Commencer une nouvelle partie",
-                taille_interligne,
-                &largeur_boite_commencer, &longueur_boite_commencer
-        );
-
-    MLV_get_size_of_adapted_text_box(
-                "Continuer la partie",
-                taille_interligne,
-                &largeur_boite_continuer, &longueur_boite_continuer
-        );
-
-    MLV_draw_adapted_text_box(
-        taille_x/4 , taille_y/4,
-        "Commencer une nouvelle partie",taille_interligne,
-        MLV_COLOR_RED,MLV_COLOR_GREEN, MLV_COLOR_BLACK,
-        MLV_TEXT_CENTER);
-    MLV_draw_adapted_text_box(
-        taille_x/4, taille_y/2,
-        "Continuer la partie",taille_interligne,
-        MLV_COLOR_RED,MLV_COLOR_GREEN, MLV_COLOR_BLACK,
-        MLV_TEXT_CENTER);
-    MLV_actualise_window();
     
 
     /*!
-     * Attendre que l'utilisateur clique sur le bouton de la souris 
+     * affichage du menu principale 
     */
 
-    while(continuer_partie != 1 && commencer_partie != 1){
-        MLV_wait_mouse(&mouse_x,&mouse_y);
-    
-        if (taille_x/4 <= mouse_x && mouse_x <= (taille_x/4 + largeur_boite_commencer) && taille_y/4 <= mouse_y &&  mouse_y <= (taille_y/4 + longueur_boite_commencer)){
-            MLV_draw_text(taille_x/4,450,"Initialisation d'une partie !",
-                          MLV_COLOR_MAGENTA);
-            commencer_partie = 1;
-        }
-        if (taille_x/4 <= mouse_x && mouse_x <= (taille_x/4 + largeur_boite_continuer) && taille_y/2 <= mouse_y &&  mouse_y <= (taille_y/2 + longueur_boite_continuer)){
-            MLV_draw_text(taille_x/4,450,"Récuperation de la partie !",
-                          MLV_COLOR_MAGENTA);
-            continuer_partie = 1;
-        }
-    }
-    MLV_actualise_window();
-    MLV_wait_seconds(2);
+    continuer_partie = menu_principale(n, taille_interligne);
 
+    
     MLV_clear_window( MLV_COLOR_BLACK);
     
-    MLV_wait_input_box(
-                100, 70, 300, 150,
-                MLV_COLOR_RED, MLV_COLOR_GREEN,MLV_COLOR_BLACK,
-                "  Nom du joueur : ", &text
-                );
+    if (! continuer_partie){
+        saisie_nom_joueur(n,taille_interligne,text);
+    }
     while(1){
         srand(time(NULL));
         matrice(n, mat);

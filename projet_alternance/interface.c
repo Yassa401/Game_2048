@@ -3,8 +3,10 @@
 #include <MLV/MLV_all.h>
 #include <time.h>
 #include <math.h>
+#include "jeu_initiale.h"
 #include "jeu_tmp.h"
 #include "interface.h"
+
 
 MLV_Color couleur(int i,int j,int mat[NB_MAX][NB_MAX]){
     switch ( mat[i][j] )
@@ -38,6 +40,7 @@ void afficher_mlv(int n, int mat[NB_MAX][NB_MAX]){
     int i,j, x, y;
     char number[50];
     int taille_interlinge = 9;
+    MLV_Font* font = MLV_load_font("Starborn.ttf", 20);
     x = 0, y = 0;
     for (i=0;i<n;i++){
         for (j=0;j<n;j++){
@@ -47,10 +50,10 @@ void afficher_mlv(int n, int mat[NB_MAX][NB_MAX]){
                 x = j * 110 + 10 + 75; /* coordonnées X */
                 /*MLV_draw_filled_rectangle(x,y,100,100,couleur(i,j,mat)); */
                 /*MLV_draw_text(x+50,y+50,number, MLV_COLOR_BLACK);*/
-                MLV_draw_text_box(
+                MLV_draw_text_box_with_font(
                 x,y,
                 100,100,
-                number,
+                number,font,
                 taille_interlinge,
                 couleur(i,j,mat), MLV_COLOR_BLACK,couleur(i,j,mat),
                 MLV_TEXT_CENTER,
