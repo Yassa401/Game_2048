@@ -71,7 +71,7 @@ void hasard(int n, int mat[NB_MAX][NB_MAX]){
 }
 
 int changement_etat(int t1[NB_MAX][NB_MAX], int t2[NB_MAX][NB_MAX]){
-    int i, j, tmp[NB_MAX][NB_MAX];
+    int i, j;
     for (i=0;i<NB_MAX;i++){
         for (j=0;j<NB_MAX;j++){
             if (t1[i][j] != t2[i][j]) {

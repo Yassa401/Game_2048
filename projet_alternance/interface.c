@@ -6,6 +6,7 @@
 #include "jeu_initiale.h"
 #include "jeu_tmp.h"
 #include "interface.h"
+#include "menu_principale.h"
 
 
 MLV_Color couleur(int i,int j,int mat[NB_MAX][NB_MAX]){
@@ -40,7 +41,8 @@ void afficher_mlv(int n, int mat[NB_MAX][NB_MAX]){
     int i,j, x, y;
     char number[50];
     int taille_interlinge = 9;
-    MLV_Font* font = MLV_load_font("Starborn.ttf", 20);
+    MLV_Font* font ;
+    font = MLV_load_font(FONT, 20);
     x = 0, y = 0;
     for (i=0;i<n;i++){
         for (j=0;j<n;j++){
@@ -48,8 +50,6 @@ void afficher_mlv(int n, int mat[NB_MAX][NB_MAX]){
                 sprintf(number,"%d",mat[i][j]);
                 y = i * 110 + 10 + 150; /* coordonnées Y */
                 x = j * 110 + 10 + 75; /* coordonnées X */
-                /*MLV_draw_filled_rectangle(x,y,100,100,couleur(i,j,mat)); */
-                /*MLV_draw_text(x+50,y+50,number, MLV_COLOR_BLACK);*/
                 MLV_draw_text_box_with_font(
                 x,y,
                 100,100,
@@ -66,10 +66,12 @@ void afficher_mlv(int n, int mat[NB_MAX][NB_MAX]){
 
 int victoire_mlv(int n, int mat[NB_MAX][NB_MAX]){
     int i,j;
+    MLV_Font* font ;
+    font = MLV_load_font(FONT, 20);
     for (i=0;i<n;i++){
         for (j=0;j<n;j++){
             if (mat[i][j] == 2048){
-                MLV_draw_text( 66* (NB_MAX*110+10+150)/100, 15 *(NB_MAX*110+10+150)/100, "Vous avez gagné !", MLV_COLOR_RED );
+                MLV_draw_text_with_font( 66* (NB_MAX*110+10+150)/100, 15 *(NB_MAX*110+10+150)/100, "Vous avez gagné !",font, MLV_COLOR_RED );
                 return 1 ;
             }
         }
@@ -78,8 +80,10 @@ int victoire_mlv(int n, int mat[NB_MAX][NB_MAX]){
 }
 
 void defaite_mlv(int n, int mat[NB_MAX][NB_MAX]){
+    MLV_Font* font ;
+    font = MLV_load_font(FONT, 20);
     if (defaite(n,mat)==0){
-        MLV_draw_text(66* (NB_MAX*110+10+150)/100,  15 *(NB_MAX*110+10+150)/100, "Vous avez perdu !", MLV_COLOR_RED );
+        MLV_draw_text_with_font(66* (NB_MAX*110+10+150)/100,  15 *(NB_MAX*110+10+150)/100, "Vous avez perdu !",font, MLV_COLOR_RED );
     }
 }
 

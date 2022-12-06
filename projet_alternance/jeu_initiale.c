@@ -23,18 +23,20 @@ int main(void){
     int longueur_boite_sauvergarde, largeur_boite_sauvegarde ;
     
     int etat_victoire = 0;
-    char text[50] ;
+    char nom_joueur[50] ;
     char score_str[50];
     char meilleur_score_str[50];
-    char * fichier = "partie.txt";
+    char fichier[30] = "partie.txt";
     MLV_Keyboard_button sym = MLV_KEYBOARD_NONE;
     MLV_Event event = MLV_NONE;
     MLV_Keyboard_button dep = MLV_KEYBOARD_NONE;
+    MLV_Font* font ;
+    
     
     n = NB_MAX, score = 0;
-    meilleur_score = 425;
+    meilleur_score = 0;
 
-    strcpy(text,"Unknown");
+    strcpy(nom_joueur,"Unknown");
     taille_x = NB_MAX*110+10+150;
     taille_y = NB_MAX*110+10+150;
     
@@ -42,13 +44,13 @@ int main(void){
     sprintf(meilleur_score_str,"%d",meilleur_score);
     
     MLV_create_window("Jeu_2048", "2048", NB_MAX*110+10+150, NB_MAX*110+10+150);
-    
+    font = MLV_load_font(FONT, 15);
 
     /*!
      * taille de la boite du bouton sauvegarde 
      */
-    MLV_get_size_of_adapted_text_box(
-                "Sauvegarde",
+    MLV_get_size_of_adapted_text_box_with_font(
+        "Sauvegarde",font,
                 taille_interligne,
                 &largeur_boite_sauvegarde, &longueur_boite_sauvergarde
         );
@@ -64,15 +66,24 @@ int main(void){
     
     MLV_clear_window( MLV_COLOR_BLACK);
     
+    if (continuer_partie){
+        menu_sauvegarde("parties.txt", n, taille_interligne, fichier);
+        printf("Nom de la sauvegarde choisi est : %s \n ",fichier);
+        if (strcmp(fichier,"null.txt") == 0){
+            continuer_partie = 0;
+        }
+        
+    }
     if (! continuer_partie){
-        saisie_nom_joueur(n,taille_interligne,text);
+        saisie_nom_joueur(n,taille_interligne,nom_joueur);
     }
     while(1){
         srand(time(NULL));
         matrice(n, mat);
         initialisation(n, mat);
+        recup_meilleure_score( &meilleur_score );
         if (continuer_partie){
-            recup_partie(n, fichier, mat, &score);
+            recup_partie(n, fichier, mat, &score, nom_joueur);
             sprintf(score_str,"%d",score);
         }
         while(1){
@@ -92,8 +103,8 @@ int main(void){
                 fusion(n, mat, dep, &score );
                 meilleur(&meilleur_score,score);
 
-                if (score >= meilleur_score){
-                sprintf(meilleur_score_str,"%d",meilleur_score);
+                if (score == meilleur_score){
+                    sprintf(meilleur_score_str,"%d",meilleur_score);
                 }
                 sprintf(score_str,"%d",score);
                 
@@ -112,14 +123,14 @@ int main(void){
                 
                 if ((7 *taille_x/100) <= mouse_x && mouse_x <= (7* taille_x/100 + largeur_boite_sauvegarde) && (15 *taille_y/100) <= mouse_y &&  mouse_y <= (15 *taille_y/100 + longueur_boite_sauvergarde) ){
                     
-                    MLV_draw_text(8* taille_x/100 + largeur_boite_sauvegarde,16 *taille_y/100,"sauvegarde effectué !",
+                    MLV_draw_text_with_font(8* taille_x/100 + largeur_boite_sauvegarde,16 *taille_y/100,"sauvegarde effectué !",font,
                           MLV_COLOR_MAGENTA);
                     MLV_actualise_window();
                     MLV_wait_seconds(1);
                 /*!
                  * Sauvegarde de la partie dans un fichier "nom_joueur.txt"
                  */
-                    sauvegarde_partie(n,mat,score,text);
+                    sauvegarde_partie(n,mat,score,nom_joueur);
                 }
 
             }
@@ -135,30 +146,31 @@ int main(void){
              * afficher le nom du joueur , le score et le meilleur score dans la fenêtre de jeu
              * afficher le bouton de sauvegarde 
              */
-            MLV_draw_text( 7* taille_x/100 , 7 * taille_y/100,
-                           "Joueur : ",
-                           MLV_COLOR_WHITE );
-            MLV_draw_text( 17* taille_x/100, 7 * taille_y/100,
-                           text,
-                           MLV_COLOR_GREEN );
+            MLV_draw_text_with_font( 7* taille_x/100 , 7 * taille_y/100,
+                                     "Joueur : ",font,
+                                     MLV_COLOR_WHITE );
+            MLV_draw_text_with_font( 17* taille_x/100, 7 * taille_y/100,
+                                     nom_joueur,font,
+                                     MLV_COLOR_GREEN );
             
-            MLV_draw_text( 42 * taille_x/100, 7 * taille_y/100,
-                           "Score : ",
-                           MLV_COLOR_WHITE );
-            MLV_draw_text( 52 * taille_x/100, 7 * taille_y/100,
-                           score_str,
-                           MLV_COLOR_GREEN );
+            MLV_draw_text_with_font( 42 * taille_x/100, 7 * taille_y/100,
+                                     "Score : ",font,
+                                     MLV_COLOR_WHITE );
+            MLV_draw_text_with_font( 52 * taille_x/100, 7 * taille_y/100,
+                                     score_str,font,
+                                     MLV_COLOR_GREEN );
 
-            MLV_draw_text( 62 * taille_x/100, 7 * taille_y/100,
-                           "Meilleur score : ",
-                           MLV_COLOR_WHITE );
-            MLV_draw_text( 82 * taille_x/100, 7 * taille_y/100,
-                           meilleur_score_str,
-                           MLV_COLOR_GREEN );
+            MLV_draw_text_with_font( 62 * taille_x/100, 7 * taille_y/100,
+                                     "Meilleur score : ",font,
+                                     MLV_COLOR_WHITE );
+            MLV_draw_text_with_font( 82 * taille_x/100, 7 * taille_y/100,
+                                     meilleur_score_str,font,
+                                     MLV_COLOR_GREEN );
 
-            MLV_draw_adapted_text_box(
+            MLV_draw_adapted_text_box_with_font(
                     7 * taille_x/100 , 15 *taille_y/100,
-                    "Sauvegarde",taille_interligne,
+                    "Sauvegarde",font,
+                    taille_interligne,
                     MLV_COLOR_RED,MLV_COLOR_GREEN, MLV_COLOR_BLACK,
                     MLV_TEXT_CENTER);
 

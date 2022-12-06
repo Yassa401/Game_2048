@@ -8,7 +8,7 @@ jeu_initiale.o : jeu_initiale.c jeu_initiale.h jeu_tmp.h sauvegarde_partie.h int
 menu_principale.o : menu_principale.c menu_principale.h 
 	gcc -W -Wall -std=c89 -pedantic -O3 -c menu_principale.c
 
-interface.o : interface.c interface.h jeu_initiale.h jeu_tmp.h
+interface.o : interface.c interface.h jeu_initiale.h jeu_tmp.h menu_principale.h
 	gcc -W -Wall -std=c89 -pedantic -O3 -c interface.c
 
 sauvegarde_partie.o : sauvegarde_partie.c sauvegarde_partie.h jeu_initiale.h
