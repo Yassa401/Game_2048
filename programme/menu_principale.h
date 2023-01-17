@@ -4,7 +4,7 @@
 #define MENU_PRINCIPALE_H
 
 #ifndef FONT
-#define FONT "font/origin.ttf"
+#define FONT "./font/origin.ttf"
 
 #endif
 

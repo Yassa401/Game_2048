@@ -6,7 +6,7 @@
 
 MLV_Color couleur(int i,int j,int mat[NB_MAX][NB_MAX]);
 
-void afficher_mlv(int n, int mat[NB_MAX][NB_MAX]);
+void afficher_grille_mlv(int n, int mat[NB_MAX][NB_MAX], MLV_Font* font);
 
 int victoire_mlv(int n, int mat[NB_MAX][NB_MAX]);
 

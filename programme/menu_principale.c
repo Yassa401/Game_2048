@@ -4,6 +4,9 @@
 #include <string.h>
 #include "menu_principale.h"
 
+/*!
+ * fonction qui lie un mot de 20 caractères max dans un fichier
+ */
 char lire_mot(FILE *fichier, char s[20]){
     int i = 0;
     char c = 0;
@@ -15,26 +18,35 @@ char lire_mot(FILE *fichier, char s[20]){
         }
         else {
             s[i] = '\0';
+            s[i+1] = '\0' ;
             return c;
         }
     }
-    while(c != ' ' && c != '\n' && c != EOF);
+    while(c != ' ' && c != '\n' && c != EOF && i < 19);
     return c;
 }
 
-void remplir_tableau(FILE *fichier,char tab[][10]){
+/*!
+ * fonction qui remplie un tableau de 10 mots de 20 caractères max
+ * elle fait appel à la fonction lire_mot pour les récupérer
+ */
+void remplir_tableau(FILE *fichier,char tab[10][20]){
     char nom_sauvegarde[20];
     int i = 0;
     char c = 0;
     while (c != ' ' && c != EOF && i<10){
         c = lire_mot(fichier,nom_sauvegarde);
+        printf("%s \n",nom_sauvegarde);
         strcpy(tab[i], nom_sauvegarde);
         i++;
     }
     return ;
 }
 
-
+/*! 
+ * affiche le menu principal du jeu dans la fenêtre graphique
+ * retourne soit 0 soit 1 selon si on veut commencer une nouvelle partie ou continuer
+ */
 int menu_principale(int n , int taille_interligne){
     /*! 
      * variables contenant la taille de la boite du texte commencer la partie
@@ -46,12 +58,18 @@ int menu_principale(int n , int taille_interligne){
      */
     int longueur_boite_continuer, largeur_boite_continuer ;
 
+    /*!
+     * variables contenant la taille de la boite du texte regles du jeu
+     */
+    int longueur_boite_regles, largeur_boite_regles ;
+    
     int taille_x ,taille_y;
     int mouse_x = 0, mouse_y = 0;
     int continuer_partie = -1  ;
 
     MLV_Font* font = MLV_load_font(FONT, 20);
-
+    MLV_Font* font_titre = MLV_load_font(FONT, 100);    
+    
     taille_x = n*110+10+150;
     taille_y = n*110+10+150;
 
@@ -71,12 +89,21 @@ int menu_principale(int n , int taille_interligne){
         &largeur_boite_continuer, &longueur_boite_continuer
         );
 
-    MLV_draw_adapted_text_box_with_font(
+    MLV_get_size_of_adapted_text_box_with_font(
+        "Règles du jeu ",font,
+        taille_interligne,
+        &largeur_boite_regles, &longueur_boite_regles
+        );
+    
+    
+    while(continuer_partie == - 1){
+        MLV_draw_adapted_text_box_with_font(
         taille_x/6 , taille_y/3,
         "Commencer une nouvelle partie",font,
         taille_interligne,
         MLV_COLOR_RED,MLV_COLOR_GREEN, MLV_COLOR_BLACK,
         MLV_TEXT_CENTER);
+    
     MLV_draw_adapted_text_box_with_font(
         taille_x/6, taille_y/2,
         "Continuer la partie",font,
@@ -84,35 +111,58 @@ int menu_principale(int n , int taille_interligne){
         MLV_COLOR_RED,MLV_COLOR_GREEN, MLV_COLOR_BLACK,
         MLV_TEXT_CENTER);
 
-    font = MLV_load_font(FONT,100);
-
-    MLV_draw_text_with_font(taille_x/10, taille_y/12,"2048 !",font,MLV_COLOR_YELLOW);
+    MLV_draw_adapted_text_box_with_font(
+        taille_x/6 , taille_y/2 + taille_y/6,
+        "Règles du jeu ",font,
+        taille_interligne,
+        MLV_COLOR_RED,MLV_COLOR_GREEN, MLV_COLOR_BLACK,
+        MLV_TEXT_CENTER);
+   
+    MLV_draw_text_with_font(taille_x/10, taille_y/12,"2048 !",font_titre,MLV_COLOR_YELLOW);
     MLV_actualise_window();
-
     
-    
-    while(continuer_partie == - 1){
         MLV_wait_mouse(&mouse_x,&mouse_y);
     
         if (taille_x/6 <= mouse_x && mouse_x <= (taille_x/6 + largeur_boite_commencer) && taille_y/3 <= mouse_y &&  mouse_y <= (taille_y/3 + longueur_boite_commencer)){
-            MLV_draw_text(taille_x/4,450,"Initialisation d'une partie !",
+            MLV_draw_text(taille_x/4,550,"Initialisation d'une partie !",
                           MLV_COLOR_MAGENTA);
             continuer_partie = 0;
         }
         if (taille_x/6 <= mouse_x && mouse_x <= (taille_x/6 + largeur_boite_continuer) && taille_y/2 <= mouse_y &&  mouse_y <= (taille_y/2 + longueur_boite_continuer)){
-            MLV_draw_text(taille_x/4,450,"Récuperation de la partie !",
+            MLV_draw_text(taille_x/4,550,"Récuperation de la partie !",
                           MLV_COLOR_MAGENTA);
             continuer_partie = 1;
         }
+        if (taille_x/6 <= mouse_x && mouse_x <= (taille_x/6 + largeur_boite_regles) && (taille_y/2 + taille_y/6 )<= mouse_y &&  mouse_y <= (taille_y/2 +taille_y/6 + longueur_boite_continuer)){
+            MLV_draw_text(taille_x/4,550,"Affichage des règles !",
+                          MLV_COLOR_MAGENTA);
+            MLV_actualise_window();
+            MLV_wait_seconds(2);
+            MLV_clear_window(MLV_COLOR_BLACK);
+            MLV_draw_text_with_font(taille_x/12,150," voici les régles du jeux 2048: ",font,MLV_COLOR_WHITE);
+            MLV_draw_text_with_font(taille_x/13,180,"sur une grille de 5*5 cases, ces cases sont numérotés ",font,MLV_COLOR_WHITE);
+            MLV_draw_text_with_font(taille_x/13,210,"avec des puissances de 2 , le principe de ce jeux c'est de ",font,MLV_COLOR_WHITE);
+            MLV_draw_text_with_font(taille_x/13,240,"glisser les tuiles dans les quatres sens en utilisant",font,MLV_COLOR_WHITE);
+            MLV_draw_text_with_font(taille_x/13,270,"les flèches du clavier, afin que deux cases portant la même valeur",font,MLV_COLOR_WHITE);
+            MLV_draw_text_with_font(taille_x/13,300,"fusionne en une (2+2,4+4....), jusqu'à atteindre la valeur ",font,MLV_COLOR_WHITE);
+            MLV_draw_text_with_font(taille_x/13,330,"2048, sans que la grille ne soit bloquée !",font,MLV_COLOR_WHITE);
+            MLV_actualise_window();
+            MLV_wait_seconds(10);
+            MLV_clear_window(MLV_COLOR_BLACK);
+        }
+        MLV_actualise_window();
+        /* MLV_wait_seconds(2); */
+        MLV_clear_window(MLV_COLOR_BLACK);
     }
     MLV_actualise_window();
     MLV_wait_seconds(2);
 
     return continuer_partie;
-
 }
 
-
+/*
+ * fonction qui gère la saisie du nom joueur et la stocke dans la variable *text
+ */
 void saisie_nom_joueur(int n,int taille_interligne, char* text){
 
     int longueur_boite_saisie, largeur_boite_saisie;
@@ -145,9 +195,12 @@ void saisie_nom_joueur(int n,int taille_interligne, char* text){
 }
 
 
-
+/*!
+ * En cas de vouloir continuer , on fait appel à la fonction pour afficher les sauvegardes disponibles dans le dossier parties_sauvegardees
+ * On saisie le nom de la sauvegarde pour pouvoir y jouer
+ */
 void menu_sauvegarde(char * parties, int n, int taille_interligne, char *nom_sauvegarde){
-    char tab[20][10] = { "NULL","NULL","NULL","NULL","NULL","NULL","NULL","NULL","NULL","NULL" };
+    char tab[10][20] = { " "," "," "," "," "," "," "," "," "," " };
     char  *text_tmp;
     FILE * fichier = NULL;
     int i, taille_x , taille_y, ret ;
@@ -172,16 +225,12 @@ void menu_sauvegarde(char * parties, int n, int taille_interligne, char *nom_sau
     taille_x = n*110+10+150;
     taille_y = n*110+10+150;
 
-    /*for (i = 0; i < 10; i++){
-        if (fscanf (fichier, "%s ", tab[i]) != 1){break ;}
-    }*/
-
     remplir_tableau(fichier, tab);
     
     for (i = 0; i < 10 ; i++ ){
         printf("%s ", tab[i]);
-
     }
+    printf("\n");
     
     
     for (i=0;i<5;i++){

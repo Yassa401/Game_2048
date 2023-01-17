@@ -5,7 +5,7 @@
 #include <math.h>
 #include <string.h>
 #include "jeu_initiale.h"
-#include "jeu_tmp.h"
+#include "gestion_jeu.h"
 #include "sauvegarde_partie.h"
 #include "interface.h"
 #include "menu_principale.h"
@@ -31,7 +31,7 @@ int main(void){
     MLV_Event event = MLV_NONE;
     MLV_Keyboard_button dep = MLV_KEYBOARD_NONE;
     MLV_Font* font ;
-    
+    MLV_Font* font_cases;
     
     n = NB_MAX, score = 0;
     meilleur_score = 0;
@@ -45,7 +45,8 @@ int main(void){
     
     MLV_create_window("Jeu_2048", "2048", NB_MAX*110+10+150, NB_MAX*110+10+150);
     font = MLV_load_font(FONT, 15);
-
+    font_cases = MLV_load_font(FONT, 20);
+    
     /*!
      * taille de la boite du bouton sauvegarde 
      */
@@ -82,6 +83,7 @@ int main(void){
         matrice(n, mat);
         initialisation(n, mat);
         recup_meilleure_score( &meilleur_score );
+        sprintf(meilleur_score_str,"%d",meilleur_score);
         if (continuer_partie){
             recup_partie(n, fichier, mat, &score, nom_joueur);
             sprintf(score_str,"%d",score);
@@ -89,8 +91,7 @@ int main(void){
         while(1){
             if (event == MLV_KEY){
                 printf("event recuperé\n");
-
-
+                
                 /*!
                  * déroulement de la partie en arrière plan  
                  */
@@ -103,7 +104,7 @@ int main(void){
                 fusion(n, mat, dep, &score );
                 meilleur(&meilleur_score,score);
 
-                if (score == meilleur_score){
+                if (score >= meilleur_score){
                     sprintf(meilleur_score_str,"%d",meilleur_score);
                 }
                 sprintf(score_str,"%d",score);
@@ -192,7 +193,7 @@ int main(void){
                     MLV_draw_filled_rectangle(x,y,100,100,MLV_COLOR_GREY);
                 }
             }
-            afficher_mlv(n,mat);
+            afficher_grille_mlv(n,mat,font_cases);
             MLV_update_window();
 
             /*!

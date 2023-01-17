@@ -14,7 +14,6 @@ then
     done
 fi;
 
-( ls -rt | cut -d "." -f 1 ) > ../parties.txt
-
+( ls -rt | cut -d "." -f 1 ; echo " ") > ../parties.txt
 
 exit 0

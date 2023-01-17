@@ -4,11 +4,13 @@
 #include <time.h>
 #include <math.h>
 #include "jeu_initiale.h"
-#include "jeu_tmp.h"
+#include "gestion_jeu.h"
 #include "interface.h"
 #include "menu_principale.h"
 
-
+/*!
+ * la fonction change la couleur de la tuile selon la valeur qu'elle comporte
+ */
 MLV_Color couleur(int i,int j,int mat[NB_MAX][NB_MAX]){
     switch ( mat[i][j] )
     {
@@ -37,12 +39,13 @@ MLV_Color couleur(int i,int j,int mat[NB_MAX][NB_MAX]){
     }
 }
 
-void afficher_mlv(int n, int mat[NB_MAX][NB_MAX]){
+/*
+ * fonction affiche la grille du jeu dans la fenêtre graphique
+ */ 
+void afficher_grille_mlv(int n, int mat[NB_MAX][NB_MAX], MLV_Font* font){
     int i,j, x, y;
     char number[50];
     int taille_interlinge = 9;
-    MLV_Font* font ;
-    font = MLV_load_font(FONT, 20);
     x = 0, y = 0;
     for (i=0;i<n;i++){
         for (j=0;j<n;j++){
@@ -64,6 +67,9 @@ void afficher_mlv(int n, int mat[NB_MAX][NB_MAX]){
     }
 }
 
+/*!
+ * fonction affiche une phrase dans la fenêtre graphique en cas de victoire
+ */
 int victoire_mlv(int n, int mat[NB_MAX][NB_MAX]){
     int i,j;
     MLV_Font* font ;
@@ -79,6 +85,9 @@ int victoire_mlv(int n, int mat[NB_MAX][NB_MAX]){
     return 0  ;
 }
 
+/*!
+ * fonction affiche une phrase dans la fenêtre graphique en cas de défaite
+ */
 void defaite_mlv(int n, int mat[NB_MAX][NB_MAX]){
     MLV_Font* font ;
     font = MLV_load_font(FONT, 20);
