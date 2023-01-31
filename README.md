@@ -15,8 +15,6 @@ commande : make
 ## Suppression exécutable et fichiers supplémentaires :
 commande : make clean
 
-## Contributeur(s):
-[@1596939]
 
 
 [https://fr.wikipedia.org/wiki/2048_(jeu_vid%C3%A9o)]: https://fr.wikipedia.org/wiki/2048_(jeu_vid%C3%A9o)
